@@ -22,29 +22,33 @@ public class BiddingApplicationSecurity extends WebSecurityConfigurerAdapter{
           PasswordEncoderFactories.createDelegatingPasswordEncoder();
     	auth
           .inMemoryAuthentication()
+          .withUser("Kumar")
+          .password(encoder.encode("Kumar"))
+          .roles("USER", "ADMIN")
+          .and()
           .withUser("Monal")
           .password(encoder.encode("Monal"))
           .roles("USER", "ADMIN")
           .and()
-          .withUser("Kumar")
-          .password(encoder.encode("Kumar"))
-          .roles("USER")
-          .and()
           .withUser("Raj")
           .password(encoder.encode("Raj"))
-          .roles("USER")
+          .roles("USER", "ADMIN")
           .and()
           .withUser("Raunik")
           .password(encoder.encode("Raunik"))
-          .roles("USER");       
+          .roles("USER", "ADMIN");      
     }
  
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-    	  httpSecurity.authorizeRequests().antMatchers("/").permitAll().and()
-          .authorizeRequests().antMatchers("/console/**").permitAll();
-  httpSecurity.csrf().disable();
-  httpSecurity.headers().frameOptions().disable();
+    	  httpSecurity.
+    	      authorizeRequests().
+    	      antMatchers("/h2-console/**").permitAll().
+    	      antMatchers("/auction/**").hasAnyRole("ADMIN","USER")
+    	      .and()
+    	      .httpBasic().and()
+               .csrf().disable()
+               .headers().frameOptions().disable();
     }
 	
 }

@@ -13,6 +13,8 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.monal.OnlineBiddingSystem.BiddingSystem.Dao.AuctionDao;
@@ -106,7 +108,7 @@ public class AuctionServiceImpl implements AuctionService{
 
 	@Override
 	public ResponseEntity<String> addBid(int itemId, int bidAmount) {
-		int uid=1;
+		int uid=getLoggedUserId(getLoogedUser());
 		int temp=-1;
 		int tempStepRate=-1;
 		try {
@@ -134,6 +136,28 @@ public class AuctionServiceImpl implements AuctionService{
 		System.out.println("Please check your Bidding"+e);
 		return new ResponseEntity<String>("Bidding is not good2",HttpStatus.NOT_FOUND);
 	  }
+	}
+
+	@Override
+	public String getLoogedUser() {
+	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	if (principal instanceof UserDetails) {
+	  String username = ((UserDetails)principal).getUsername();
+	  return username;
+}
+		return "";
+	}
+
+	@Override
+	public int getLoggedUserId(String name) {
+		List<User> ll=getAllUsers();
+		int uid=-1;
+		for(User u: ll) {
+			if(u.getName().equals(name)) {
+				uid=u.getUserId();
+			}
+		}
+		return uid;
 	}
 
 }

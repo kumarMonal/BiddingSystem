@@ -22,4 +22,6 @@ public interface AuctionService {
 	List<Item> getAllItems();
 	HashMap<Integer,Auction> getRunningAuction();
 	ResponseEntity<String> addBid(int itemId,int bidAmount);
+	String getLoogedUser();
+	int getLoggedUserId(String name);
 }
