@@ -45,7 +45,11 @@ SonarLint
 Cool tool to check Code quality
 Present eclipse market place
 Compatible with Spring tool suite
--------------------------------------------------------------------------------
 
---------------------------------Future Scope-----------------------------------------
+
+
+Future Scope
 Integrate jenkins(skipped because i have no artifactory and env to deploy)
+
+
+
