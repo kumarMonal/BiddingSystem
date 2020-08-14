@@ -33,7 +33,7 @@ import com.monal.OnlineBiddingSystem.BiddingSystem.dto.ResponseSupportive;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class SeviceCheck {
+class ServiceCheck {
 
 	@MockBean
 	AuctionController auc;
