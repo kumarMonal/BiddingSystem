@@ -9,15 +9,14 @@ public class Item {
 
 	@Id
 	@GeneratedValue
-	int itemId;
-	String name;
-	String desc;
+	private int itemId;
+	private String name;
+	private String desc;
 	
 	public Item() {
 	}
 
 	public Item(String name, String desc) {
-		super();
 		this.name = name;
 		this.desc = desc;
 	}

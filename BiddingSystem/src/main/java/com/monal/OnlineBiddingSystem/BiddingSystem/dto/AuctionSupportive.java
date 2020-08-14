@@ -2,9 +2,8 @@ package com.monal.OnlineBiddingSystem.BiddingSystem.dto;
 
 public class AuctionSupportive {
 
-	int bidAmount;
-
-	
+	private int bidAmount;
+    
 	public AuctionSupportive() {
 		super();
 	}

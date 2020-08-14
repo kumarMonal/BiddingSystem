@@ -6,28 +6,24 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
 
-import org.hibernate.annotations.CollectionType;
 
 @Entity
 public class Auction {
     
 	@Id
 	@GeneratedValue
-	int auctionId;
-	int item;
-	int baseRate;
-	int stepRate;
+	private int auctionId;
+	private int item;
+	private int baseRate;
+	private int stepRate;
 	@ElementCollection
-	List<UserBid> userBid;
-	String status;
+	private List<UserBid> userBid;
+	private String status;
 	
 	public Auction() {
 	}
 	public Auction(int item, int baseRate, int stepRate, List<UserBid> userBid, String status) {
-		super();
 		this.item = item;
 		this.baseRate = baseRate;
 		this.stepRate = stepRate;

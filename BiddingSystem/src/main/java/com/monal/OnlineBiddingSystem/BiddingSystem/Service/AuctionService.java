@@ -1,27 +1,25 @@
 package com.monal.OnlineBiddingSystem.BiddingSystem.Service;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import com.monal.OnlineBiddingSystem.BiddingSystem.Model.Auction;
 import com.monal.OnlineBiddingSystem.BiddingSystem.Model.Item;
 import com.monal.OnlineBiddingSystem.BiddingSystem.Model.User;
 import com.monal.OnlineBiddingSystem.BiddingSystem.Model.UserBid;
-import com.monal.OnlineBiddingSystem.BiddingSystem.dto.AuctionSupportive;
 import com.monal.OnlineBiddingSystem.BiddingSystem.dto.ResponseSupportive;
 
 public interface AuctionService {
         
-	List<ResponseSupportive> getAllAuctionsResponse();
-	List<Auction> getAllAuctions();
-	List<UserBid> getAllUserBids();
-	List<User> getAllUsers();
-	List<Item> getAllItems();
-	HashMap<Integer,Auction> getRunningAuction();
-	ResponseEntity<String> addBid(int itemId,int bidAmount);
+	Page<ResponseSupportive> getAllAuctionsResponse(Pageable pag);
+	Page<Auction> getAllAuctions(Pageable pag);
+	Page<UserBid> getAllUserBids(Pageable pag);
+	Page<User> getAllUsers(Pageable pag);
+	Page<Item> getAllItems(Pageable pag);
+	HashMap<Integer,Auction> getRunningAuction(Pageable pag);
+	ResponseEntity<String> addBid(int itemId,int bidAmount,Pageable pag);
 	String getLoogedUser();
-	int getLoggedUserId(String name);
+	int getLoggedUserId(String name,Pageable pag);
 }

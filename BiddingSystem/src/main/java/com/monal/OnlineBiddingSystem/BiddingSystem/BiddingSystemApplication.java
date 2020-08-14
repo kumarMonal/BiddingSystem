@@ -1,5 +1,6 @@
 package com.monal.OnlineBiddingSystem.BiddingSystem;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,5 +10,5 @@ public class BiddingSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BiddingSystemApplication.class, args);
 	}
-
+	
 }

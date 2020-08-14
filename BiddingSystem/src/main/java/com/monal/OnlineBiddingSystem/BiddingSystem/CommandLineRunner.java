@@ -17,18 +17,23 @@ import com.monal.OnlineBiddingSystem.BiddingSystem.Model.UserBid;
 @Component
 public class CommandLineRunner implements org.springframework.boot.CommandLineRunner{
 
-	@Autowired
-	UserDao userDao;
+	private UserDao userDao;
+	private ItemDao itemDao;
+	private AuctionDao auctionDao;
+	private UserBidDao userBidDao;
+	
 	
 	@Autowired
-	ItemDao itemDao;
-	
-	@Autowired
-	AuctionDao auctionDao;
-	
-	@Autowired
-	UserBidDao userBidDao;
-	
+	public CommandLineRunner(UserDao userDao, ItemDao itemDao, AuctionDao auctionDao, UserBidDao userBidDao) {
+		super();
+		this.userDao = userDao;
+		this.itemDao = itemDao;
+		this.auctionDao = auctionDao;
+		this.userBidDao = userBidDao;
+	}
+
+
+
 	@Override
 	public void run(String... args) throws Exception {
        User u1=new User("Monal",24);

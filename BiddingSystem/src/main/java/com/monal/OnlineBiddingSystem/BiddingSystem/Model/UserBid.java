@@ -1,27 +1,23 @@
 package com.monal.OnlineBiddingSystem.BiddingSystem.Model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 
-//@NamedQuery(name = "Highest Bid",query = "select item,max(bidAmount) from UserBid group By item")
 @Entity
 public class UserBid {
    
 	@Id
 	@GeneratedValue
-	int bidId;
-	int user;
-	int item;
-	int bidAmount;
-    String cond;
+	private int bidId;
+	private int user;
+	private int item;
+	private int bidAmount;
+	private String cond;
 	
 	public UserBid() {
 	}
 	public UserBid(int user, int bidAmount, int item, String cond) {
-		super();
 		this.user = user;
 		this.bidAmount = bidAmount;
 		this.item = item;

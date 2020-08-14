@@ -2,18 +2,17 @@ package com.monal.OnlineBiddingSystem.BiddingSystem.dto;
 
 public class ResponseSupportive {
       
-	int itemId;
-	int highestRate;
-	int StepRate;
+	private int itemId;
+	private int highestRate;
+	private int stepRate;
 	
 	public ResponseSupportive() {
 	}
 
 	public ResponseSupportive(int itemId, int highestRate, int stepRate) {
-		super();
 		this.itemId = itemId;
 		this.highestRate = highestRate;
-		StepRate = stepRate;
+		this.stepRate = stepRate;
 	}
 
 	public int getItemId() {
@@ -33,11 +32,11 @@ public class ResponseSupportive {
 	}
 
 	public int getStepRate() {
-		return StepRate;
+		return stepRate;
 	}
 
 	public void setStepRate(int stepRate) {
-		StepRate = stepRate;
+		this.stepRate = stepRate;
 	}
 	
 }

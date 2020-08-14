@@ -9,15 +9,14 @@ public class User {
 
 	@Id
 	@GeneratedValue
-	int userId;
-	String name;
-	int age;
+	private int userId;
+	private String name;
+	private int age;
 	
 	public User() {
 	}
 
 	public User(String name, int age) {
-		super();
 		this.name = name;
 		this.age = age;
 	}

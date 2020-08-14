@@ -4,18 +4,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.monal.OnlineBiddingSystem.BiddingSystem.Dao.AuctionDao;
 import com.monal.OnlineBiddingSystem.BiddingSystem.Dao.ItemDao;
@@ -28,32 +29,32 @@ import com.monal.OnlineBiddingSystem.BiddingSystem.Model.UserBid;
 import com.monal.OnlineBiddingSystem.BiddingSystem.Service.AuctionService;
 import com.monal.OnlineBiddingSystem.BiddingSystem.dto.ResponseSupportive;
 
-@Component
+@Service
 public class AuctionServiceImpl implements AuctionService{
+	
+	private ItemDao itemDao;
+	private UserDao userDao;
+	private UserBidDao userBidDao;
+	private AuctionDao auctionDao;
+	
+	@Autowired
+	public AuctionServiceImpl(ItemDao itemDao,UserDao userDao,UserBidDao userBidDao,AuctionDao auctionDao) {
+		this.itemDao=itemDao;
+		this.userDao=userDao;
+		this.userBidDao=userBidDao;
+		this.auctionDao=auctionDao;
+	}
 
-	@Autowired
-	ItemDao itemDao;
-	
-	@Autowired
-	UserDao userDao;
-	
-	@Autowired
-	UserBidDao userBidDao;
-	
-	@Autowired
-	AuctionDao auctionDao;
-	
-	@Autowired
-	EntityManager em;
-	
-	@SuppressWarnings({ "unchecked", "finally" })
+	@SuppressWarnings({ "finally" })
 	@Override
-	public List<ResponseSupportive> getAllAuctionsResponse() {
-		List<ResponseSupportive> ans=new LinkedList<ResponseSupportive>();
+	public Page<ResponseSupportive> getAllAuctionsResponse(Pageable pag) {
+		Logger logg=LoggerFactory.getLogger(AuctionServiceImpl.class);
+		LinkedList<ResponseSupportive> ans=new LinkedList<>();
+		Page<ResponseSupportive> myPage=new PageImpl<>(ans,pag,ans.size());
 		try {
-			HashMap<Integer,Auction> hm=getRunningAuction();
-			List<UserBid> ll=getAllUserBids();
-			HashMap<Integer,Integer> h=new HashMap<Integer,Integer>();
+			HashMap<Integer,Auction> hm=getRunningAuction(pag);
+			List<UserBid> ll=getAllUserBids(pag).getContent();
+			HashMap<Integer,Integer> h=new HashMap<>();
 			for(UserBid ub: ll) {
 				int tempId=ub.getItem();
 				if(h.containsKey(tempId)) {
@@ -66,53 +67,56 @@ public class AuctionServiceImpl implements AuctionService{
 				}
 			}
 	         for(Integer it: hm.keySet()) {
-	        	 if(h.containsKey(it))
-	        	 ans.add(new ResponseSupportive(it,h.get(it),hm.get(it).getStepRate()));
+	        	 if(h.containsKey(it)) {
+	        	   ans.add(new ResponseSupportive(it,h.get(it),hm.get(it).getStepRate()));
+	        	   myPage=new PageImpl<>(ans,pag,ans.size());}
 	         }	
 		}
 		catch(Exception e) {
-			System.out.println(e);
+			logg.info("Service"+e);
 		}
 		finally {
-			return ans;
+			return myPage;
 		}
 	}
 
+	
 	@Override
-	public List<Auction> getAllAuctions() {
-		return auctionDao.findAll();
+	public Page<Auction> getAllAuctions(Pageable pag) {
+		return auctionDao.findAll(pag);
 	}
 
 	@Override
-	public List<UserBid> getAllUserBids() {
-		return userBidDao.findAll();
+	public Page<UserBid> getAllUserBids(Pageable pag) {
+		return userBidDao.findAll(pag);
 	}
 
 	@Override
-	public List<User> getAllUsers() {
-		return userDao.findAll();
+	public Page<User> getAllUsers(Pageable pag) {
+		return userDao.findAll(pag);
 	}
 
 	@Override
-	public List<Item> getAllItems() {
-		return itemDao.findAll();
+	public Page<Item> getAllItems(Pageable pag) {
+		return  itemDao.findAll(pag);
 	}
 
 	@Override
-	public HashMap<Integer,Auction> getRunningAuction() {
-		List<Auction> ll=getAllAuctions();
+	public HashMap<Integer,Auction> getRunningAuction(Pageable pag) {
+		List<Auction> ll=getAllAuctions(pag).getContent();
 		Map<Integer, Auction> hm=ll.stream().filter(x->x.getStatus().equals("RUNNING")).collect(Collectors.toMap(x->x.getItem(), x->x));
 		return (new HashMap<Integer,Auction>(hm));
 	}
 
 
 	@Override
-	public ResponseEntity<String> addBid(int itemId, int bidAmount) {
-		int uid=getLoggedUserId(getLoogedUser());
+	public ResponseEntity<String> addBid(int itemId, int bidAmount,Pageable pag) {
+		org.slf4j.Logger logg=LoggerFactory.getLogger(AuctionServiceImpl.class);
+		int uid=getLoggedUserId(getLoogedUser(),pag);
 		int temp=-1;
 		int tempStepRate=-1;
 		try {
-			for(ResponseSupportive u: getAllAuctionsResponse()) {
+			for(ResponseSupportive u: getAllAuctionsResponse(pag)) {
 				if(u.getItemId()==itemId){
 					temp=u.getHighestRate();
 					tempStepRate=u.getStepRate();
@@ -120,9 +124,9 @@ public class AuctionServiceImpl implements AuctionService{
 				}
 			}	
 		if(temp==-1&&tempStepRate==-1)
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		String st="REJECT";
-		HashMap<Integer,Auction> hm=getRunningAuction();
+		HashMap<Integer,Auction> hm=getRunningAuction(pag);
 		int tempBaseRate=hm.get(itemId).getBaseRate();
 		if(tempStepRate+temp<=bidAmount&&tempBaseRate<=bidAmount) {
 			st="ACCEPT";
@@ -133,8 +137,8 @@ public class AuctionServiceImpl implements AuctionService{
 		return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	catch(Exception e) {
-		System.out.println("Please check your Bidding"+e);
-		return new ResponseEntity<String>("Bidding is not good2",HttpStatus.NOT_FOUND);
+		logg.info("Please check your Bidding"+e);
+		return new ResponseEntity<>("Bidding is not good2",HttpStatus.NOT_FOUND);
 	  }
 	}
 
@@ -142,15 +146,14 @@ public class AuctionServiceImpl implements AuctionService{
 	public String getLoogedUser() {
 	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	if (principal instanceof UserDetails) {
-	  String username = ((UserDetails)principal).getUsername();
-	  return username;
+         return ((UserDetails)principal).getUsername();
 }
 		return "";
 	}
 
 	@Override
-	public int getLoggedUserId(String name) {
-		List<User> ll=getAllUsers();
+	public int getLoggedUserId(String name,Pageable pag) {
+		List<User> ll=getAllUsers(pag).getContent();
 		int uid=-1;
 		for(User u: ll) {
 			if(u.getName().equals(name)) {
