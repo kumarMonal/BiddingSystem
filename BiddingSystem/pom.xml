@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.monal.OnlineBiddingSystem.BiddingSystem</groupId>
 	<artifactId>BiddingSystem</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>BiddingSystem</name>
 	<description>BiddingSystem</description>
 

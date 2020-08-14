@@ -3,6 +3,7 @@ package com.monal.OnlineBiddingSystem.BiddingSystem;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.monal.OnlineBiddingSystem.BiddingSystem.Dao.AuctionDao;
@@ -15,7 +16,7 @@ import com.monal.OnlineBiddingSystem.BiddingSystem.Model.User;
 import com.monal.OnlineBiddingSystem.BiddingSystem.Model.UserBid;
 
 @Component
-public class CommandLineRunner implements org.springframework.boot.CommandLineRunner{
+public class CommandLine implements CommandLineRunner{
 
 	private UserDao userDao;
 	private ItemDao itemDao;
@@ -24,8 +25,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
 	
 	
 	@Autowired
-	public CommandLineRunner(UserDao userDao, ItemDao itemDao, AuctionDao auctionDao, UserBidDao userBidDao) {
-		super();
+	public CommandLine(UserDao userDao, ItemDao itemDao, AuctionDao auctionDao, UserBidDao userBidDao) {
 		this.userDao = userDao;
 		this.itemDao = itemDao;
 		this.auctionDao = auctionDao;
