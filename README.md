@@ -63,9 +63,9 @@ Integrate jenkins(skipped because i have no artifactory and env to deploy)
 =>How to set up env for this?
 1>Pull code from Github.
 2>Build it.
-3>Run with "java -jar <jar name>"
-4>Use get api call to list running auction "http://localhost:8080/auction?status=RUNNING&page=0&size=7" or "http://localhost:8080/auction?status=RUNNING".
-5>Check item id in get api and use that to place a bid useing post call "http://localhost:8080/auction/<itemid>/bid".  
+3>Run with "java -jar {jar name}"
+4>Use get api call to list running auction "http://localhost:8080/auction?status=RUNNING".
+5>Check item id in get api and use that to place a bid using post call "http://localhost:8080/auction/{itemid}/bid".  
 
 
 
